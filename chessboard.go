@@ -22,8 +22,8 @@ var transformations [][]int = [][]int{
 }
 
 func applyTransformation(initial Position, index int) (Position, error) {
-	initial.X += transformations[index][0]
-	initial.Y += transformations[index][1]
+	initial.Y += transformations[index][0]
+	initial.X += transformations[index][1]
 	if initial.X > 15 || initial.Y > 15 || initial.X < 1 || initial.Y < 1 {
 		return initial, errors.New("out of bounds")
 	} else {
@@ -42,23 +42,18 @@ func getMoves(initial Position) []Position {
 	return moves
 }
 
-func canForceWin(positions []Position) bool {
-	if cap(positions) == 0 {
-		panic("empty array was passed in")
-	}
+func canForceWinGame(positions Position) bool {
 	var nextMoves []Position
-	for _, move := range positions {
-		var possibleJumps = getMoves(move)
-		for _, possibleJump := range possibleJumps {
-			nextMoves = append(nextMoves, possibleJump)
+	var possibleJumps = getMoves(positions)
+	for _, possibleJump := range possibleJumps {
+		nextMoves = append(nextMoves, possibleJump)
+	}
+	for _, move := range nextMoves { // check for winning condition
+		if !canForceWinGame(move) {
+			return true
 		}
 	}
-	fmt.Println(nextMoves)
-	if cap(nextMoves) == 0 {
-		return false
-	} else {
-		return !canForceWin(nextMoves)
-	}
+	return false
 }
 
 func main() {
@@ -70,8 +65,8 @@ func main() {
 		var xy []string = strings.Split(string(startingPosition), " ")
 		var x, _ = strconv.Atoi(xy[0])
 		var y, _ = strconv.Atoi(xy[1])
-		var position = []Position{{x, y}}
-		if canForceWin(position) == true {
+		var position = Position{x, y}
+		if canForceWinGame(position) == true {
 			fmt.Println("First")
 		} else {
 			fmt.Println("Second")
