@@ -43,11 +43,7 @@ func getMoves(initial Position) []Position {
 }
 
 func canForceWinGame(positions Position) bool {
-	var nextMoves []Position
-	var possibleJumps = getMoves(positions)
-	for _, possibleJump := range possibleJumps {
-		nextMoves = append(nextMoves, possibleJump)
-	}
+	var nextMoves = getMoves(positions)
 	for _, move := range nextMoves { // check for winning condition
 		if !canForceWinGame(move) {
 			return true
