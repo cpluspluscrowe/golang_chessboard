@@ -42,6 +42,25 @@ func getMoves(initial Position) []Position {
 	return moves
 }
 
+func canForceWin(positions []Position) bool {
+	if cap(positions) == 0 {
+		panic("empty array was passed in")
+	}
+	var nextMoves []Position
+	for _, move := range positions {
+		var possibleJumps = getMoves(move)
+		for _, possibleJump := range possibleJumps {
+			nextMoves = append(nextMoves, possibleJump)
+		}
+	}
+	fmt.Println(nextMoves)
+	if cap(nextMoves) == 0 {
+		return false
+	} else {
+		return !canForceWin(nextMoves)
+	}
+}
+
 func main() {
 	reader := bufio.NewReaderSize(os.Stdin, 1024*1024)
 	var input, _, _ = reader.ReadLine()
@@ -51,8 +70,11 @@ func main() {
 		var xy []string = strings.Split(string(startingPosition), " ")
 		var x, _ = strconv.Atoi(xy[0])
 		var y, _ = strconv.Atoi(xy[1])
-		var position = Position{x, y}
-		getMoves(position)
+		var position = []Position{{x, y}}
+		if canForceWin(position) == true {
+			fmt.Println("First")
+		} else {
+			fmt.Println("Second")
+		}
 	}
-	fmt.Println("Done")
 }
